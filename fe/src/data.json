@@ -1,37 +1,37 @@
 [
     {
         "id":1,
-        "avatar":"https://i.pinimg.com/564x/e8/7a/b0/e87ab0a15b2b65662020e614f7e05ef1.jpg",
-        "name":"Ariana Grande",
-        "username":"@arianagrande",
-        "timeUpload":"8h",
-        "content":"hello everyone",
-        "uploadImage":"https://i.pinimg.com/564x/e8/7a/b0/e87ab0a15b2b65662020e614f7e05ef1.jpg",
+        "profil_picture":"https://i.pinimg.com/564x/cf/9b/3d/cf9b3d6009e9beb7a074bb55cbe32493.jpg",
+        "fullName":"Ariana Grande",
+        "userName":"@arianagrande",
+        "created_at":"8h",
+        "content":"there are recommended books for u",
+        "image":"https://3.bp.blogspot.com/-EO3pT4S8QvQ/Va6SOcIsAQI/AAAAAAAAjLk/DpEQC_1EShQ/s1600/20%2Bbest%2Bbooks%2Bimage.jpg",
         "likes":250,
-        "comment":300
+        "replies":300
     }
     ,
     {
         "id":2,
-        "avatar":"https://i.pinimg.com/564x/41/76/b9/4176b9b864c1947320764e82477c168f.jpg",
-        "name":"Taylor Swift",
-        "username":"@taylorswift",
-        "timeUpload":"9h",
-        "content":"hello everybody",
-        "uploadImage":"https://i.pinimg.com/564x/e8/7a/b0/e87ab0a15b2b65662020e614f7e05ef1.jpg",
+        "profil_picture":"https://i.pinimg.com/564x/2b/3b/e7/2b3be7f6b41ff32a7d30f09a0699a967.jpg",
+        "fullName":"Allisa Daguise",
+        "userName":"@allisadaguise",
+        "created_at":"9h",
+        "content":"there are recommended movie for u",
+        "image":"https://i.pinimg.com/originals/d4/97/84/d49784117cd223265b274a2255a20375.jpg",
         "likes":280,
-        "comment":300
+        "replies":300
     }
     ,
     {
         "id":3,
-        "avatar":"https://i.pinimg.com/564x/41/76/b9/4176b9b864c1947320764e82477c168f.jpg",
-        "name":"Taylor Swift",
-        "username":"@taylorswift",
-        "timeUpload":"9h",
+        "profil_picture":"https://i.pinimg.com/564x/41/76/b9/4176b9b864c1947320764e82477c168f.jpg",
+        "fullName":"Taylor Swift",
+        "userName":"@taylorswift",
+        "created_at":"9h",
         "content":"hello everybody",
-        "uploadImage":"",
+        "image":"",
         "likes":280,
-        "comment":300
+        "replies":300
     }
 ]

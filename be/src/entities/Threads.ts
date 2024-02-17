@@ -5,36 +5,33 @@ import { Likes } from './Likes';
 
 @Entity()
 export class Threads {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @ManyToOne(() => User, user => user.threads)
-    user: User;
+  @Column()
+  content: string;
 
-    @OneToMany(() => Replies, replies => replies.threads)
-    replies: Replies[];
+  @Column({ nullable: true })
+  image: string;
 
-    @OneToMany(() => Likes, likes => likes.threads)
-    likes: Likes[];
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  postedAt: Date;
 
-    @Column()
-    content: string;
+  @ManyToOne(() => User, (user) => user.threads, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
+  user: User;
 
-    @Column({ nullable: true })
-    image: string;
+  @OneToMany(() => Likes, (likes) => likes.thread, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
+  likes: Likes[];
 
-    @Column()
-    number_of_replies: number;
-
-    @Column({ type: 'date' })
-    created_at: Date;
-
-    @Column()
-    created_by: number;
-
-    @Column({ type: 'date' })
-    updated_at: Date;
-
-    @Column()
-    updated_by: number;
+  @OneToMany(() => Replies, (replies) => replies.thread, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
+  replies: Replies[];
 }

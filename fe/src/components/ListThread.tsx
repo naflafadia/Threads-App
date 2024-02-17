@@ -33,18 +33,18 @@ export default function ListThread (props: IThreadCard) {
         <Box borderTop="#313131 1px solid" borderBottom="#313131 1px solid" mt="30px">
         <Stack direction="row" spacing={4} mt="60px" marginTop="2px" padding="10px">
             <WrapItem>
-                <Avatar name='Kola Tioluwani' src={props.avatar} />
+                <Avatar name='Kola Tioluwani' src={props.profil_picture} />
             </WrapItem>
             <Flex gap="10px" direction="column">
                 <Flex gap="5px" alignItems="center">
-                    <Text color="white">{props.name}</Text>
-                    <Text color="white" fontWeight="light" fontSize="sm">{props.username}</Text>
+                    <Text color="white">{props.fullName}</Text>
+                    <Text color="white" fontWeight="light" fontSize="sm">{props.userName}</Text>
                     <FontAwesomeIcon icon={faCircle} color="white" width="5px"/>
-                    <Text color="white" fontWeight="light" fontSize="sm">{props.timeUpload}</Text>
+                    <Text color="white" fontWeight="light" fontSize="sm">{props.created_at}</Text>
                 </Flex>
                 <Flex direction="column" gap="10px">
                     <Text color="white" fontSize="xs">{props.content}</Text>
-                    <Image src={props.uploadImage} width="350px"/>
+                    <Image src={props.image} width="350px"/>
                 </Flex>
                 <Flex gap="30px">
                     <Flex alignItems="center" gap="6px">
@@ -55,7 +55,7 @@ export default function ListThread (props: IThreadCard) {
                     </Flex>
                     <Flex alignItems="center" gap="6px">
                         <FontAwesomeIcon icon={faComment} color="white" />
-                        <Text color="white" fontSize="12px" fontWeight="light">{props.comment}</Text>
+                        <Text color="white" fontSize="12px" fontWeight="light">{props.replies}</Text>
                     </Flex>
                 </Flex>
             </Flex>

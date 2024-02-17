@@ -1,26 +1,16 @@
 import { Request, Response } from "express";
-import threadsService from "../services/ThreadsService";
+import ThreadsService from "../services/ThreadsService";
 
-export default new (class ThreadsController {
-    async getAllThreads(req: Request, res: Response) {
-        try {
-            const threads = await threadsService.getAllThreads();
-            return res.status(200).json({ status: "success", data: { threads } });
-        } catch (error) {
-            
-            console.error("Error getting all threads:", error);
-            return res.status(500).json({ status: "error", message: "Internal server error" });
-        }
+export default new class ThreadsController {
+    findAllThreads(req: Request, res: Response) {
+        ThreadsService.findAllThreads(req, res)
     }
 
-    async getOneThread(req: Request, res: Response) {
-        try {
-            const threadId = parseInt(req.params.id);
-            const thread = await threadsService.getOneThread(threadId);
-            return res.status(200).json({ status: "success", data: { thread } });
-        } catch (error) {
-            console.error("Error getting one thread:", error);
-            return res.status(500).json({ status: "error", message: "Internal server error" });
-        }
+    findOneThread(req: Request, res: Response) {
+        ThreadsService.findOneThread(req, res)
     }
-})();
+
+    createThread(req: Request, res: Response) {
+        ThreadsService.createThread(req, res)
+    }
+}

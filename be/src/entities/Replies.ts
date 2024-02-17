@@ -6,28 +6,19 @@ import { Threads } from './Threads';
 export class Replies {
     @PrimaryGeneratedColumn()
     id: number;
-
-    @ManyToOne(() => User, user => user.replies)
-    user: User;
-
-    @ManyToOne(() => Threads, threads => threads.replies)
-    threads: Threads;
-
-    @Column()
-    image: string;
-
+  
     @Column()
     content: string;
-
-    @Column({ type: 'date' })
-    created_at: Date;
-
-    @Column()
-    created_by: number;
-
-    @Column({ type: 'date' })
-    updated_at: Date;
-
-    @Column()
-    updated_by: number;
+  
+    @ManyToOne(() => User, user => user.replies, {
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+    })
+    user: User;
+  
+    @ManyToOne(() => Threads, thread => thread.replies, {
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+    })
+    thread: Threads;
 }

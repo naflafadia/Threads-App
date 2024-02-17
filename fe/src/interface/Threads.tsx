@@ -1,11 +1,11 @@
 export type IThreadCard = {
     id: number;
-    avatar: string;
-    name: string;
-    username: string;
-    timeUpload: string;
+    profil_picture: string;
+    fullName: string;
+    userName: string;
+    created_at: string;
     content: string;
-    uploadImage: string;
+    image: string;
     likes: number;
-    comment: number;
+    replies: number;
 }

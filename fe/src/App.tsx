@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { ChakraProvider, CSSReset } from '@chakra-ui/react';
 import RootLayout from './layout/RootLayout';
 import Home from './pages/Home';
-import Profile from './pages/Profile';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
 const App: React.FC = () => {
     return (
@@ -13,7 +14,8 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<RootLayout />}/>
           <Route path="/home" element={<Home/>}/>
-          <Route path="/profile" element={<Profile/>}/>
+          <Route path="/login" element={<LoginPage/>}/>
+          <Route path="/register" element={<RegisterPage/>}/>
         </Routes>
       </Router>
     </ChakraProvider>

@@ -39,14 +39,14 @@ const Home: React.FC = () => {
         {threads.map((data:IThreadCard, index:number) => (
             <ListThread
             id={data.id}
-            avatar={data.avatar}
-            name={data.name}
-            username={data.username}
-            timeUpload={data.timeUpload}
+            profil_picture={data.profil_picture}
+            fullName={data.fullName}
+            userName={data.userName}
+            created_at={data.created_at}
             content={data.content}
-            uploadImage={data.uploadImage}
+            image={data.image}
             likes={data.likes}
-            comment={data.comment}
+            replies={data.replies}
             key={index}
             />
         ))}
