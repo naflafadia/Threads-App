@@ -5,121 +5,73 @@ import { Request, Response } from "express";
 import { createThreadSchema } from "../utils/validator/threadValidator";
 import cloudinary from "../libs/cloudinary";
 import { equal } from "joi";
+import { log } from "console";
 
 export default new class ThreadsService {
     private readonly ThreadRepository : Repository <Threads> = AppDataSource.getRepository(Threads)
 
-    async findAllThreads (req: Request, res: Response) {
+    async findAllThreads(): Promise<object | string> {
         try {
-            const response = await this.ThreadRepository.find()
-
-            return res.status(200).json({
-                message: "get all threads",
-                data: response
+          const response = await this.ThreadRepository.createQueryBuilder("threads")
+            .leftJoin("threads.user", "user")
+            .leftJoin("threads.likes", "likes")
+            .leftJoin("threads.replies", "replies")
+            .addSelect(['user.userName', 'user.fullName'])
+            .loadRelationCountAndMap("threads.likesCount", "threads.likes")
+            .loadRelationCountAndMap("threads.replyCount", "threads.replies").orderBy({
+              "threads.id" : "DESC"
             })
+            .getMany();
+    
+          return {
+            message: "success getting all Threads",
+            data: response,
+          };
         } catch (error) {
-            return res.status(500).json({message: "server error while get threads"})
+          return `message: ${error}`;
         }
-    }
+      }
 
-    // async findOneThread(req: Request, res: Response) {
-    //     try {
-    //         const id: number = Number(req.params.id);
-    //         const threadDetails = await this.ThreadRepository.findOne({
-    //             where: {id},
-    //             relations: ["user", "replies"]});
-    
-    //         if (threadDetails) {
-    //             const responseData = {
-    //                 id: threadDetails.id,
-    //                 content: threadDetails.content,
-    //                 user: {
-    //                     id: threadDetails.user.id,
-    //                     userName: threadDetails.user.userName,
-    //                     fullName: threadDetails.user.fullName,
-    //                     profil_picture: threadDetails.user.profil_picture,
-    //                 },
-    //                 postedAt: threadDetails.postedAt.toISOString(),
-    //                 likes: threadDetails.likes,
-    //                 replies: threadDetails.replies ? threadDetails.replies.length : 0, // Assuming replies is an array
-    //             };
-    
-    //             return res.status(200).json({ status: "success", data: responseData });
-    //         } else {
-    //             return res.status(404).json({ message: "Thread not found!" });
-    //         }
-    //     } catch (error) {
-    //         console.error("Error:", error);
-    //         return res.status(500).json({ message: "Error" });
-    //     }
-    // }
-
-    async findOneThread(req: Request, res: Response) {
+    async findOneThread(id: number): Promise<object | string> {
         try {
-            const id: number = Number(req.query.thread_id);
-            const threadDetails = await this.ThreadRepository.findOne({
-                where: { id },
-                relations: ["user", "replies", "replies.user"],
-            });
-
-            console.log("ini thread", threadDetails)
+          const response = await this.ThreadRepository.findOne({
+            where: { id },
+          });
     
-            if (!threadDetails) {
-                return res.status(404).json({ message: "Thread not found!" });
-            }
-    
-            const formattedReplies = threadDetails.replies.map(reply => ({
-                id: reply.id,
-                content: reply.content,
-                user: {
-                    id: reply.user.id,
-                    username: reply.user.userName,
-                    name: reply.user.fullName,
-                    profile_picture: reply.user.profil_picture,
-                },
-                // created_at: reply.created_at.toISOString(),
-            }));
-    
-            const responseData = {
-                id: threadDetails.id,
-                content: threadDetails.content,
-                user: {
-                    id: threadDetails.user.id,
-                    username: threadDetails.user.userName,
-                    name: threadDetails.user.fullName,
-                    profile_picture: threadDetails.user.profil_picture,
-                },
-                postedAt: threadDetails.postedAt.toISOString(),
-                likes: threadDetails.likes,
-                replies: formattedReplies,
-            };
-    
-            return res.status(200).json({ status: "success", data: responseData });
+          return {
+            message: "success getting a Thread",
+            data: response,
+          };
         } catch (error) {
-            console.error("Error:", error);
-            return res.status(500).json({ message: "Error" });
+          return "message: something error while getting a Thread";
         }
-    }
+      }
     
     async createThread(req: Request, res: Response) {
         try {
             const userId = res.locals.loginSession
-            const image = res.locals.filename
-            console.log("ini gambar", image)
+            let image = null
+
+            if(req.file) {
+              image = res.locals.filename
+            }
             const data = this.ThreadRepository.create({
                 content: req.body.content,
-                image: image || null,
+                image: image,
             })
 
             const { error, value } = createThreadSchema.validate(data);
             if(error) return res.status(400).json(error.details[0].message)
 
-            cloudinary.upload()
-            const cloudinaryRes = await cloudinary.destination(value.image)
+            if(image != null ) {
+              cloudinary.upload()
+              const cloudinaryRes = await cloudinary.destination(value.image)
+              value.image = cloudinaryRes.secure_url
+            }
 
             const thread = {
                 ...value,
-                image: cloudinaryRes.secure_url,
+                image,
                 user: {
                     id: userId.user.id
                 }
@@ -135,5 +87,53 @@ export default new class ThreadsService {
             console.error("Error creating thread:", error);
             return res.status(500).json({ message: "Internal server error", error: error.message });
         }
+    }
+    // async createThread(req: Request, res: Response) {
+    //     try {
+    //         const userId = res.locals.loginSession
+    //         const image = res.locals.filename
+    //         const data = this.ThreadRepository.create({
+    //             content: req.body.content,
+    //             image: image || null,
+    //         })
+
+    //         const { error, value } = createThreadSchema.validate(data);
+    //         if(error) return res.status(400).json(error.details[0].message)
+
+    //         cloudinary.upload()
+    //         const cloudinaryRes = await cloudinary.destination(value.image)
+
+    //         const thread = {
+    //             ...value,
+    //             image: cloudinaryRes.secure_url,
+    //             user: {
+    //                 id: userId.user.id
+    //             }
+    //         }
+    //           console.log("ini adalah", thread)
+        
+    //           const insertData = await this.ThreadRepository.save(thread)
+    //           return res.status(200).json({
+    //             message: "success create thread",
+    //             insertData: insertData,
+    //           })
+    //     } catch(error) {
+    //         console.error("Error creating thread:", error);
+    //         return res.status(500).json({ message: "Internal server error", error: error.message });
+    //     }
+    // }
+
+    async deleteThread(req: Request, res: Response): Promise<Response> {
+      try {
+        const id: number = parseInt(req.params.id,10);
+        const response = await this.ThreadRepository.delete(id);
+  
+        return res
+          .status(200)
+          .json({ message: "succes deleting thread", data: response });
+      } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "error while deleting thread" });
+      }
     }
 }

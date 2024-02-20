@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {useState} from 'react'
+// import {useState} from 'react'
 import { 
     Flex,  
     Avatar,
@@ -17,28 +17,28 @@ export default function ListThread (props: IThreadCard) {
     const navigate: any = useNavigate()
     console.log(typeof navigate)
 
-    const [likes, setLikes] = useState(props.likes);
-    const [liked, setLiked] = useState(false);
+    // const [likes, setLikes] = useState(props.likes);
+    // const [liked, setLiked] = useState(false);
 
-    const handleLike = () => {
-        if (liked) {
-            setLikes(likes - 1);
-        } else {
-            setLikes(likes + 1);
-        }
-        setLiked(!liked);
-    }
+    // const handleLike = () => {
+    //     if (liked) {
+    //         setLikes(likes - 1);
+    //     } else {
+    //         setLikes(likes + 1);
+    //     }
+    //     setLiked(!liked);
+    // }
     return (
     <>
         <Box borderTop="#313131 1px solid" borderBottom="#313131 1px solid" mt="30px">
         <Stack direction="row" spacing={4} mt="60px" marginTop="2px" padding="10px">
             <WrapItem>
-                <Avatar name='Kola Tioluwani' src={props.profil_picture} />
+                <Avatar name={props.fullName} src={props.profil_picture} />
             </WrapItem>
             <Flex gap="10px" direction="column">
                 <Flex gap="5px" alignItems="center">
                     <Text color="white">{props.fullName}</Text>
-                    <Text color="white" fontWeight="light" fontSize="sm">{props.userName}</Text>
+                    <Text color="white" fontWeight="light" fontSize="sm">@{props.userName}</Text>
                     <FontAwesomeIcon icon={faCircle} color="white" width="5px"/>
                     <Text color="white" fontWeight="light" fontSize="sm">{props.created_at}</Text>
                 </Flex>
@@ -48,14 +48,15 @@ export default function ListThread (props: IThreadCard) {
                 </Flex>
                 <Flex gap="30px">
                     <Flex alignItems="center" gap="6px">
-                        <button onClick={handleLike}>
-                        <FontAwesomeIcon icon={faHeart} color={liked ? "red" : "white"} />
-                        </button>
-                        <Text color="white" fontSize="12px" fontWeight="light">{likes}</Text>
+                        {/* <button onClick={handleLike}> */}
+                        {/* <FontAwesomeIcon icon={faHeart} color={liked ? "red" : "white"} /> */}
+                        <FontAwesomeIcon icon={faHeart} color="white" />
+                        {/* </button> */}
+                        <Text color="white" fontSize="12px" fontWeight="light">{props.likesCount}</Text>
                     </Flex>
                     <Flex alignItems="center" gap="6px">
                         <FontAwesomeIcon icon={faComment} color="white" />
-                        <Text color="white" fontSize="12px" fontWeight="light">{props.replies}</Text>
+                        <Text color="white" fontSize="12px" fontWeight="light">{props.replyCount}</Text>
                     </Flex>
                 </Flex>
             </Flex>
