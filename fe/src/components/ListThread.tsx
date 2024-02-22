@@ -11,7 +11,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle, faHeart, faComment } from "@fortawesome/free-solid-svg-icons";
 import {IThreadCard} from '../interface/Threads'
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function ListThread (props: IThreadCard) {
     const navigate: any = useNavigate()
@@ -30,7 +30,8 @@ export default function ListThread (props: IThreadCard) {
     // }
     return (
     <>
-        <Box borderTop="#313131 1px solid" borderBottom="#313131 1px solid" mt="30px">
+    <Link to={`/thread/${props.id}`}>
+        <Box borderTop="#313131 1px solid" borderBottom="#313131 1px solid" mt="8px">
         <Stack direction="row" spacing={4} mt="60px" marginTop="2px" padding="10px">
             <WrapItem>
                 <Avatar name={props.fullName} src={props.profil_picture} />
@@ -62,6 +63,7 @@ export default function ListThread (props: IThreadCard) {
             </Flex>
         </Stack>
         </Box>
+    </Link>
     </>
     )
 }

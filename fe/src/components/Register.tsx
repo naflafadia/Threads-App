@@ -19,7 +19,7 @@ export default function Register () {
             <FormControl isRequired mt="10px">
                 <Input placeholder='Fullname*' color="white" mb="15px"/>
                 <Input placeholder='Email*' color="white" mb="15px"/>
-                <Input placeholder='Password*' color="white"/>
+                <Input placeholder='Password*' color="white" type='password'/>
             </FormControl>
             <Flex justifyContent="flex-end" mt="20px">
             </Flex>

@@ -5,6 +5,7 @@ import RootLayout from './layout/RootLayout';
 import Home from './pages/Home';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import Detail from './pages/Detail';
 
 const App: React.FC = () => {
     return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
           <Route path="/home" element={<Home/>}/>
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/register" element={<RegisterPage/>}/>
+          <Route path="/thread/:id" element={<Detail/>}/>
         </Routes>
       </Router>
     </ChakraProvider>
