@@ -22,7 +22,7 @@ routes.post("/auth/login", AuthController.login)
 // Route Replies
 routes.post("/reply/:id", authMiddleware.Auth, UploadFile.upload("image"), RepliesController.createReply)
 routes.get("/reply/:id", RepliesController.getOneReplies)
-routes.get("/replies", RepliesController.getAllReplies)
+routes.get("/replies/:id", RepliesController.getAllReplies)
 routes.delete("/reply/:id", authMiddleware.Auth, RepliesController.deleteReply)
 
 // Route Likes

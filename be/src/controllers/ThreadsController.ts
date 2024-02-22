@@ -27,8 +27,12 @@ export default new class ThreadsController {
         }
       }
 
-    createThread(req: Request, res: Response) {
-        ThreadsService.createThread(req, res)
+    async createThread(req: Request, res: Response) {
+        try {
+          await ThreadsService.createThread(req, res)
+        } catch (error) {
+          throw error
+        }
     }
 
     async deleteThread(req: Request, res: Response) {

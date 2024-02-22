@@ -4,45 +4,59 @@ import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import cloudinary from "../libs/cloudinary";
 import { createThreadSchema } from "../utils/validator/threadValidator";
+import { threadId } from "worker_threads";
+import { log } from "console";
 
 export default new class RepliesService {
     private readonly RepliesRepository: Repository<Replies> = AppDataSource.getRepository(Replies)
 
     async createReply(req: Request, res: Response) : Promise<Response> {
         try {
+            const threadId: number = parseInt(req.params.id,10);
             const userId = res.locals.loginSession
-            const id =  parseInt(req.params.id, 10);
+            const content = req.body.content
             let image =  null
+
             if(req.file) {
                 image = res.locals.filename
             }
-                const data = this.RepliesRepository.create({
-                    content: req.body.content,
-                    image : image
-                })
                 
-                const {error, value} = createThreadSchema.validate(data)
-                if(error) return res.status(400).json(error.details[0].message)
+            const {error, value} = createThreadSchema.validate({content, image})
+            if(error) return res.status(400).json(error.details[0].message)
                 
-                if(image != null ) {
-                    cloudinary.upload()
-                    const cloudinaryRes = await cloudinary.destination(value.image)
-                    value.image = cloudinaryRes.secure_url
-                  }
+            let isCloudinary = null
+            if(image != null ) {
+                cloudinary.upload()
+                const cloudinaryRes = await cloudinary.destination(value.image)
+                isCloudinary = cloudinaryRes.secure_url
+            }
 
-                const replyRes = ({
-                    ...value,
-                    image,
-                    user: {
-                        id: userId.user.id
-                    },
-                    thread: {
-                        id: id
-                    }
-                })
+            const data = this.RepliesRepository.create({
+                content: req.body.content,
+                image : isCloudinary,
+                user: {
+                    id: userId.user.id
+                },
+                thread: {
+                    id: threadId
+                }
+            })
+
+                // const replyRes = ({
+                //     ...value,
+                //     image,
+                //     user: {
+                //         id: userId.user.id
+                //     },
+                //     thread: {
+                //         id: threadId
+                //     }
+                // })
+            console.log(image, 'imageee');
+            console.log(isCloudinary, 'cloudy');
             
-            console.log(replyRes);
-            const newReply = await this.RepliesRepository.save(replyRes)
+            
+            const newReply = await this.RepliesRepository.save(data)
             return res.status(200).json({message: "succes create reply", data: newReply})
         } catch (error) {
             console.log(error);
@@ -92,8 +106,11 @@ export default new class RepliesService {
 
     async getAllReplies(req: Request, res: Response) : Promise<Response> {
         try {
+            const id: number = parseInt(req.params.id, 10);
             const response = await this.RepliesRepository.find({
-                relations: ["thread", "user"],
+                where: { 
+                    thread: { id : id, } },
+                relations: ["user"],
                 select: {
                     user: {
                       id: true,
@@ -108,8 +125,11 @@ export default new class RepliesService {
                   },
             })
 
+
             return res.status(200).json({message: "succes geting all reply", data: response})
+
         } catch (error) {
+            
             return res.status(500).json({message: "error while geting reply"})
         }
     }

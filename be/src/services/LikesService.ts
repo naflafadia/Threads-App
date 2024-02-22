@@ -2,7 +2,6 @@ import { CommandStartedEvent, Repository } from "typeorm";
 import { Likes } from "../entities/Likes"
 import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
-import { User } from "../entities/User";
 import { Threads } from "../entities/Threads";
 
 export default new class LikesService {

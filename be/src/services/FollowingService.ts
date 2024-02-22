@@ -3,7 +3,6 @@ import { Follows } from "../entities/Following";
 import { User } from "../entities/User";
 import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
-import { log } from "console";
 
 export default new (class FollowService {
   private readonly followsRepository: Repository<Follows>;
