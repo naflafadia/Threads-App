@@ -126,7 +126,7 @@ export default new class RepliesService {
             })
 
 
-            return res.status(200).json({message: "succes geting all reply", data: response})
+            return res.status(200).json({message: "success geting all reply", data: response})
 
         } catch (error) {
             

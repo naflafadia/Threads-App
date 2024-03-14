@@ -1,9 +1,9 @@
-export type IThreadCard = {
+export type IReply = {
     id: number;
     profil_picture?: string;
     fullName?: string;
     userName?: string;
-    created_at: string;
+    postedAt: string;
     content?: string;
     image?: string;
     likesCount?: number;

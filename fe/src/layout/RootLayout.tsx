@@ -1,10 +1,16 @@
 import React from 'react';
 import { Grid, GridItem } from "@chakra-ui/react"
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../components/Leftbar';
 import Home from '../pages/Home';
-import Profile from '../pages/Profile';
+import Profile from '../pages/Rightbar';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/type/RootState';
 
 const RootLayout: React.FC = () => {
+  const auth = useSelector((state: RootState) => state.auth)
+  console.log(auth);
+  
+
   return (
     <Grid templateColumns="repeat(6, 1fr)" bg="gray.50">
     {/* sidebar */}

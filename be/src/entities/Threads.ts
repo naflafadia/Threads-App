@@ -14,7 +14,7 @@ export class Threads {
   @Column({ nullable: true })
   image: string;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  @Column({ type: "timestamp" })
   postedAt: Date;
 
   @ManyToOne(() => User, (user) => user.threads, {

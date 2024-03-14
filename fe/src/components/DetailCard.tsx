@@ -4,7 +4,6 @@ import React from "react"
 import { Input,
          Flex, 
          Avatar, 
-         AvatarBadge, 
          Stack,
          Button,
          Container, 
@@ -17,6 +16,9 @@ import { IReply } from "../interface/Reply";
 import { API } from "../libs/api";
 import { Link, useParams } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
+import { RootState } from "../store/type/RootState";
+import { useSelector } from "react-redux";
+import { useThreadsReply } from "../features/thread/hooks/useThreadReply";
 
 export default function DetailCard () {
     const [thread, setThread] = React.useState<IThreadCard>()
@@ -24,6 +26,8 @@ export default function DetailCard () {
     const [reply, setReply] = React.useState<IReply[]>([])
     console.log(reply, "ini reply")
     const {id} = useParams()
+    const auth = useSelector((state: RootState) => state.auth)
+    const { handlePostReply, handleChangeReply, handleButtonClickReply, fileInputRefReply } = useThreadsReply()
 
     async function getDetail() {
         try {
@@ -71,22 +75,34 @@ export default function DetailCard () {
             profil_picture={thread.user?.profil_picture}
             fullName={thread.user?.fullName}
             userName={thread.user?.userName}
-            created_at={thread.created_at}
+            postedAt={thread.postedAt}
             content={thread.content}
             image={thread.image}
             likesCount={thread.likesCount}
             replyCount={thread.replyCount}
+            is_liked={true}
             />
         )}
         <Stack direction='row' spacing={4}>
-            <Avatar>
-                <AvatarBadge boxSize='1.15em' bg='green.500' />
-            </Avatar>
-            <Input variant='unstyled' placeholder='What is happening?!' color="white" />
-            <Flex gap="10px" alignItems="center">
-                <FontAwesomeIcon icon={faImage} color="#04a51e" />
-                <Button backgroundColor="#04a51e" borderRadius="50px" width="70px" color="white" _hover={{bg:"#413543", color:"white"}} fontSize="sm" height="30px">Post</Button>
+            <Avatar name={auth.fullName} src={auth.profil_picture}/>
+            <form encType="multipart/form-data" onSubmit={handlePostReply}>
+            <Flex>
+            <Input variant='unstyled' placeholder='What is happening?!' color="white" name="content" onChange={handleChangeReply}/>
+            <Flex gap="10px" alignItems="center" ml="130px">
+                <button onClick={handleButtonClickReply} type="button">
+                    <FontAwesomeIcon icon={faImage} color="#04a51e"/>
+                </button>
+                <Input
+                name="image"
+                type='file'
+                onChange={handleChangeReply}
+                style={{display: "none" }}
+                ref={fileInputRefReply}
+                />
+                <Button backgroundColor="#04a51e" borderRadius="50px" width="70px" color="white" _hover={{bg:"#413543", color:"white"}} fontSize="sm" height="30px" type="submit">Post</Button>
             </Flex>
+            </Flex>
+            </form>
         </Stack>
         {reply?.map((data:IReply, index:number) => (
             <ListThread
@@ -94,11 +110,12 @@ export default function DetailCard () {
             profil_picture={data.user?.profil_picture}
             fullName={data.user?.fullName}
             userName={data.user?.userName}
-            created_at={data.created_at}
+            postedAt={data.postedAt}
             content={data.content}
             image={data.image}
             likesCount={data.likesCount}
             replyCount={data.replyCount}
+            is_liked={true}
             key={index}
             />
         ))}

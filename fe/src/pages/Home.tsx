@@ -1,42 +1,29 @@
+/* eslint-disable no-empty */
 /* eslint-disable no-useless-catch */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-// import React, { useEffect } from "react";
-import React from "react"
 import { Input,
          Flex, 
          Heading, 
          Spacer, 
          Avatar, 
-         AvatarBadge, 
          Stack,
          Button,
-         Container } from "@chakra-ui/react"
+         Container, 
+         Box,
+         Text} from "@chakra-ui/react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import ListThread from "../components/ListThread";
 import {IThreadCard} from '../interface/Threads'
-import { API } from "../libs/api";
+import { RootState } from "../store/type/RootState";
+import { useSelector } from "react-redux";
+import { useThreads, usePostThread }  from "../features/thread/hooks/useThreads"
 
 export default function Home ()  {
-    const [threads, setThreads] = React.useState<IThreadCard[]>([]);
-    // useEffect(() => {
-    //     setThreads(data)
-    // }, [])
-
-    async function getThreads() {
-        try {
-            const response = await API.get('/threads')
-            
-            setThreads(response.data.data)
-        } catch (error) {
-            throw error
-        }
-    }
-
-    React.useEffect(() => {
-        getThreads().then((data) => console.log(data))
-    }, [])
-    console.log("iniiii", threads);
+    const auth = useSelector((state: RootState) => state.auth)
+    const { threads, isLoading, getThreads, error } = useThreads()
+    const { data, handleChange, postThread, handleButtonClick, fileInputRef } = usePostThread()
+    console.log(data, "dataaaa");
     
     return (
      <Container backgroundColor="#1d1d1d">
@@ -44,29 +31,56 @@ export default function Home ()  {
             <Heading as="h1" fontSize="1.5em" color="white" mb="20px">Home</Heading>
             <Spacer />
         <Stack direction='row' spacing={4}>
-            <Avatar>
-                <AvatarBadge boxSize='1.15em' bg='green.500' />
-            </Avatar>
-            <Input variant='unstyled' placeholder='What is happening?!' color="white" />
-            <Flex gap="10px" alignItems="center">
-                <FontAwesomeIcon icon={faImage} color="#04a51e" />
-                <Button backgroundColor="#04a51e" borderRadius="50px" width="70px" color="white" _hover={{bg:"#413543", color:"white"}} fontSize="sm" height="30px">Post</Button>
+            <Avatar name={auth.fullName} src={auth.profil_picture}/>
+            <form encType="multipart/form-data" onSubmit={postThread}>
+            <Flex>
+            <Input variant='unstyled' placeholder='What is happening?!' color="white" name="content" onChange={handleChange}/>
+            <Flex gap="10px" alignItems="center" ml="130px">
+                <button onClick={handleButtonClick} type="button">
+                    <FontAwesomeIcon icon={faImage} color="#04a51e"/>
+                </button>
+                <Input
+                name="image"
+                type='file'
+                onChange={handleChange}
+                style={{display: "none" }}
+                ref={fileInputRef}
+              />
+                <Button backgroundColor="#04a51e" borderRadius="50px" width="70px" color="white" _hover={{bg:"#413543", color:"white"}} fontSize="sm" height="30px" type="submit">Post</Button>
             </Flex>
+            </Flex>
+            </form>
         </Stack>
-        {threads.map((data:IThreadCard, index:number) => (
-            <ListThread
-            id={data.id}
-            profil_picture={data.user?.profil_picture}
-            fullName={data.user?.fullName}
-            userName={data.user?.userName}
-            created_at={data.created_at}
-            content={data.content}
-            image={data.image}
-            likesCount={data.likesCount}
-            replyCount={data.replyCount}
-            key={index}
-            />
-        ))}
+        {error && (
+            <Box>
+                <Text color="white">Gagal memuat data</Text>
+            </Box>
+        )}
+        {isLoading ? (
+              <Box>
+                <Text color="white">Now Loading ...</Text>
+              </Box>
+            ) : (
+                <Box>
+                {threads.data.map((data:IThreadCard, index:number) => (
+                    <ListThread
+                    id={data.id}
+                    profil_picture={data.user?.profil_picture}
+                    fullName={data.user?.fullName}
+                    userName={data.user?.userName}
+                    postedAt={data.postedAt}
+                    content={data.content}
+                    image={data.image}
+                    likesCount={data.likesCount}
+                    replyCount={data.replyCount}
+                    is_liked={true}
+                    user={data.user}
+                    key={index}
+                    />
+                ))}
+                </Box>
+            )
+          }
         </Flex>
      </Container>
     )

@@ -1,12 +1,11 @@
-import DetailCard from "../components/DetailCard";
-import Profile from "./Rightbar";
+import { Grid, GridItem } from "@chakra-ui/react";
 import Sidebar from "../components/Leftbar";
-import { Grid, GridItem } from "@chakra-ui/react"
+import Profile from "./Rightbar";
+import ProfileCard from "../components/Profile";
 
-export default function Detail () {
+export default function ProfilePage () {
     return (
-        <>
-    <Grid templateColumns="repeat(6, 1fr)" bg="gray.50">
+        <Grid templateColumns="repeat(6, 1fr)" bg="gray.50">
     {/* sidebar */}
     <GridItem
       as="aside"
@@ -18,15 +17,15 @@ export default function Detail () {
     >
       <Sidebar />
     </GridItem>
-    {/* detail */}
+    {/* home */}
     <GridItem
       as="main"
-      colSpan={{ base: 6, lg: 4, xl: 3 }} 
+      colSpan={{ base: 6, lg: 4, xl: 3 }}
       p="40px"
       bg="#1d1d1d"
       border="#313131 1px solid"
     >
-        <DetailCard/>
+        <ProfileCard />
     </GridItem>
     {/* Profile */}
     <GridItem
@@ -39,6 +38,5 @@ export default function Detail () {
         <Profile />
     </GridItem>
   </Grid>
-        </>
     )
 }

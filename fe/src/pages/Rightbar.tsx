@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Container,
          Box, 
          Flex,
@@ -10,40 +11,45 @@ import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FaGithub } from "react-icons/fa6";
 import { FaLinkedin, FaFacebookSquare, FaInstagram } from "react-icons/fa";
+import { RootState } from "../store/type/RootState";
+import { useSelector } from "react-redux";
 
-const Profile: React.FC = () => {
+export default function Profile () {
+    const auth = useSelector((state: RootState) => state.auth)
+    
     return (
-        <Container display="flex" flexDirection="column" alignItems="center" gap="20px" backgroundColor="#1d1d1d" border="#313131 1px solid">
-            <Box backgroundColor="#262626" width="200px" borderRadius="5px" minWidth="350px" border="#313131 1px solid">
+        <Container display="flex" flexDirection="column" alignItems="center" gap="20px" backgroundColor="#1d1d1d" top="0" position="sticky">
+            <Box backgroundColor="#262626" borderRadius="5px" border="#313131 1px solid" width="350px" >
                 <Flex direction="column" padding="15px">
                     <Text color="white" fontWeight="bold">My Profile</Text>
                 </Flex>
                 <Container>
-                <Flex direction="column" gap="10px" mb="10px">
+                <Flex direction="column" gap="5px" mb="10px">
                     <Box>
-                        <Image src="https://wallpaper.dog/large/20511389.jpg" padding="10px" borderRadius="30px" height="150px" width="500px" />
-                        <Image src="https://static.vecteezy.com/system/resources/thumbnails/002/204/755/small_2x/profile-placeholder-female-avatar-in-blue-tones-vector.jpg" width="60px" borderRadius="50px" marginTop="-55px" marginLeft="50px"/>
+                        <Image src="https://i.pinimg.com/originals/5f/08/58/5f085809f2b711643e4eb4974cc03c0e.gif" padding="5px" borderRadius="30px" height="150px" width="500px" />
+                        <Avatar name={auth.fullName} src={auth.profil_picture} mt="-30px" ml="40px"/>
+                        {/* <Image src="https://static.vecteezy.com/system/resources/thumbnails/002/204/755/small_2x/profile-placeholder-female-avatar-in-blue-tones-vector.jpg" width="60px" borderRadius="50px" marginTop="-55px" marginLeft="50px"/> */}
                         <Flex justifyContent="flex-end">
                         <Button backgroundColor="#262626" borderRadius="50px" width="85px" color="white" _hover={{bg:"#413543", color:"white"}} border="white 1px solid" fontSize="xs" height="20px" padding="10px" marginRight="17px">Edit Profile</Button>
                         </Flex>
                     </Box>
-                    <Text color="white" fontWeight="bold" fontSize="lg" mb="-5px">✨ Renatta Deborah ✨</Text>
-                    <Text color="white" fontSize="11px" fontWeight="light">@renattadeborah</Text>
+                    <Text color="white" fontWeight="bold" fontSize="lg" mb="-5px">{auth.fullName}</Text>
+                    <Text color="white" fontSize="11px" fontWeight="light">@{auth.userName}</Text>
                     <Text color="white" fontSize="13px">Lorem ipsum dolor sit, amet consectetur adipisicing.</Text>
                     <Flex gap="20px">
                         <Flex gap="3px">
-                            <Text color="white" fontWeight="bold" fontSize="xs">350</Text>
+                            <Text color="white" fontWeight="bold" fontSize="xs">{auth.following_count}</Text>
                             <Text color="white" fontSize="xs" fontWeight="thin">Following</Text>
                         </Flex>
                         <Flex gap="3px">
-                            <Text color="white" fontWeight="bold" fontSize="xs">350</Text>
+                            <Text color="white" fontWeight="bold" fontSize="xs">{auth.followers_count}</Text>
                             <Text color="white" fontSize="xs" fontWeight="thin">Followers</Text>
                         </Flex>
                     </Flex>
                 </Flex>
                 </Container>
             </Box>
-            <Box backgroundColor="#262626" width="200px" borderRadius="5px" minWidth="350px" border="#313131 1px solid">
+            <Box backgroundColor="#262626" borderRadius="5px" width="350px" border="#313131 1px solid">
                 <Flex direction="column" padding="15px">
                     <Text color="white" fontWeight="bold">Suggested for you</Text>
                 <Flex mt="20px" gap="20px">
@@ -84,7 +90,7 @@ const Profile: React.FC = () => {
                 </Flex>
                 </Flex>
             </Box>
-            <Box backgroundColor="#262626" width="200px" borderRadius="5px" minWidth="350px" border="#313131 1px solid">
+            <Box backgroundColor="#262626" borderRadius="5px" width="350px" border="#313131 1px solid">
                 <Flex direction="column" padding="12px" gap="8px">
                 <Flex alignItems="center" gap="5px">
                     <Text color="white" fontSize="sm">Developed by</Text>
@@ -107,5 +113,3 @@ const Profile: React.FC = () => {
         </Container>
     )
 }
-
-export default Profile

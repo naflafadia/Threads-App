@@ -14,55 +14,69 @@ import { List,
          Spacer,
          Stack,
          Avatar,
-         AvatarBadge,
          Box,
          Heading} from "@chakra-ui/react"
-import { NavLink } from "react-router-dom"
-import { faHome, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { faUser, faHeart } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { BiLogOut } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import { AiFillHome,
+         AiOutlineHome,
+         AiOutlineSearch,
+         AiFillHeart,
+         AiOutlineHeart } from "react-icons/ai";
+import { BiSolidUser, BiUser, BiSolidSearchAlt2 } from "react-icons/bi";
+import { RootState } from '../store/type/RootState';
+import { useSelector } from 'react-redux';
+import { AUTH_LOGOUT } from '../store/RootReducer';
+import { useDispatch } from 'react-redux';
 
 const Sidebar: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const auth = useSelector((state: RootState) => state.auth)
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(AUTH_LOGOUT());
+  };
 
     return (
     <>
-    <List color="white" fontSize="1.2em" spacing={4} justifyContent="start" position="fixed">
+    <List color="white" fontSize="1.2em" spacing={4} justifyContent="start" position="sticky" top="0">
+      <Flex direction="column" gap="20px">
         <Text fontSize='5xl' color="#04a51e" as='b'>circle</Text>
-      <ListItem display="flex" gap="7px">
-        <NavLink to="/">
-          <FontAwesomeIcon icon={faHome}/>
-        </NavLink>
-        <Text fontSize="lg">Home</Text>
+      <Link to="/">
+      <ListItem display="flex" gap="7px" alignItems="center">
+          {location.pathname === "/" ? <AiFillHome/> : <AiOutlineHome/>}
+        <Text fontSize="lg" fontWeight={location.pathname === "/" ? "bold" : "medium"}>Home</Text>
       </ListItem>
-      <ListItem display="flex" gap="7px">
-        <NavLink to="create">
-          <FontAwesomeIcon icon={faMagnifyingGlass}/>
-        </NavLink>
-        <Text fontSize="lg">Search</Text>
+      </Link>
+      <Link to="/search">
+      <ListItem display="flex" gap="7px" alignItems="center">
+          {location.pathname === "/search" ? <BiSolidSearchAlt2/> : <AiOutlineSearch/>}
+        <Text fontSize="lg" fontWeight={location.pathname === "/search" ? "bold" : "medium"}>Search</Text>
       </ListItem>
-      <ListItem display="flex" gap="7px">
-        <NavLink to="profile">
-          <FontAwesomeIcon icon={faHeart}/>
-        </NavLink>
-        <Text fontSize="lg">Follows</Text>
+      </Link>
+      <Link to="/follows">
+      <ListItem display="flex" gap="7px" alignItems="center">
+      {location.pathname === "/follows" ? <AiFillHeart/> : <AiOutlineHeart/>}
+        <Text fontSize="lg" fontWeight={location.pathname === "/follows" ? "bold" : "medium"}>Follows</Text>
       </ListItem>
-      <ListItem display="flex" gap="7px">
-        <NavLink to="profile">
-          <FontAwesomeIcon icon={faUser}/>
-        </NavLink>
-        <Text fontSize="lg">Profile</Text>
+      </Link>
+      <Link to="/profile">
+      <ListItem display="flex" gap="7px" alignItems="center">
+      {location.pathname === "/profile" ? <BiSolidUser/> : <BiUser/>}
+        <Text fontSize="lg" fontWeight={location.pathname === "/profile" ? "bold" : "medium"}>Profile</Text>
       </ListItem>
+      </Link>
       <Button backgroundColor="#04a51e" borderRadius="50px" width="170px" color="white" _hover={{bg:"#413543", color:"white"}} onClick={onOpen}>Create Post</Button>
-      <Link to={'/login'}>
+      <Link to={'/auth/login'} onClick={handleLogout}>
       <Flex gap="10px" position="fixed" bottom="55">
       <BiLogOut color="white" fontSize="30px"/>
       <Heading as="h1" fontSize="1em" color="white" mb="20px">Logout</Heading>
       </Flex>
       </Link>
+      </Flex>
     </List>
     <Container>
     <Modal
@@ -76,9 +90,10 @@ const Sidebar: React.FC = () => {
         <Flex direction="column" gap="5px" mt="20px" padding="20px">
             <Spacer />
         <Stack direction='row' spacing={4}>
-            <Avatar>
+            {/* <Avatar>
                 <AvatarBadge boxSize='1.15em' bg='green.500' />
-            </Avatar>
+            </Avatar> */}
+            <Avatar name={auth.fullName} src={auth.profil_picture}/>
             <Input variant='unstyled' placeholder='What is happening?!' color="white" />
         </Stack>
         </Flex>

@@ -3,6 +3,7 @@ import { Follows } from "../entities/Following";
 import { User } from "../entities/User";
 import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
+import { log } from "console";
 
 export default new (class FollowService {
   private readonly followsRepository: Repository<Follows>;
@@ -134,6 +135,72 @@ export default new (class FollowService {
         } catch (error) {
             console.error("Error during getFollowing:", error);
             return res.status(500).json({ message: "Failed to get following" });
+        }
+    }
+
+    async find(loginSession: any, queryType: string, queryLimit: number) : Promise<any> {
+        try {
+            let follows = Follows[0];
+
+            if(queryType === "followings") {
+                follows = await this.followsRepository.find({
+                    take: queryLimit,
+                    where: {
+                        follower: {
+                            id: loginSession.user.id
+                        },
+                    },
+                    relations: ["followed"]
+                })
+                return follows.map((follow) => ({
+                    id: follow.id,
+                    user_id: follow.followed.id,
+                    userName: follow.followed.userName,
+                    fullName: follow.followed.fullName,
+                    email: follow.followed.email,
+                    profil_picture: follow.followed.profil_picture,
+                    profil_description: follow.followed.profil_description,
+                    is_followed: true
+                }))
+            } else if(queryType === "followers") {
+                follows = await this.followsRepository.find({
+                    take: queryLimit,
+                    where: {
+                        followed: {
+                            id: loginSession.user.id
+                        },
+                    },
+                    relations: ["follower"]
+                })
+
+                return Promise.all(
+                    follows.map(async (data) => {
+                        const isFollowed = await this.followsRepository.count({
+                            where: {
+                                followed: {
+                                    id: data.follower.id
+                                },
+                                follower: {
+                                    id: loginSession.user.id
+                                }
+                            }
+                        })
+
+                        return {
+                            id: data.id,
+                            user_id: data.follower.id,
+                            userName: data.follower.userName,
+                            fullName: data.follower.fullName,
+                            email: data.follower.email,
+                            profil_picture: data.follower.profile_picture,
+                            profil_description: data.follower.profile_description,
+                            is_followed: isFollowed > 0
+                        }
+                    })
+                )
+            }
+        } catch (error) {
+            throw new Error(error.message)
         }
     }
 })();

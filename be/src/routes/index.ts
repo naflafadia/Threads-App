@@ -18,6 +18,7 @@ routes.delete("/thread/:id", authMiddleware.Auth, ThreadsController.deleteThread
 // Route Auth
 routes.post("/auth/register", AuthController.register)
 routes.post("/auth/login", AuthController.login)
+routes.get("/auth/check", authMiddleware.Auth, AuthController.check)
 
 // Route Replies
 routes.post("/reply/:id", authMiddleware.Auth, UploadFile.upload("image"), RepliesController.createReply)
@@ -36,5 +37,6 @@ routes.post("/follow", authMiddleware.Auth, FollowingController.followUser);
 routes.delete("/follow/:id", authMiddleware.Auth, FollowingController.unfollowUser);
 routes.get("/followers", authMiddleware.Auth, FollowingController.getFollowers);
 routes.get("/following", authMiddleware.Auth, FollowingController.getFollowing);
+routes.get("/follows", authMiddleware.Auth, FollowingController.find)
 
 export default routes

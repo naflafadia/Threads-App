@@ -4,6 +4,7 @@ import { User } from "../entities/User"
 import { Request, Response } from "express";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken"
+import { loginSchema } from "../utils/validator/authValidator";
 
 export default new class AuthService {
     private readonly UserRepository: Repository<User> = AppDataSource.getRepository(User)
@@ -17,32 +18,58 @@ export default new class AuthService {
         }
     }
 
-    async login(reqBody: any): Promise<object | string> {
+    async login(req: Request, res: Response): Promise<Response> {
         try {
+            const data = req.body
+            const {error, value} = loginSchema.validate(data)
+            if(error) return res.status(400).json(error.details[0].message)
             const checkEmail = await this.UserRepository.findOne({
                 where: {
-                    email: reqBody.email
+                    email: value.email
+                },
+                relations: ["followers", "following"]
+            })
+            if (!checkEmail) return res.status(400).json({ error: `Email ${value.email} is not registered` });
+
+            const comparePassword = await bcrypt.compare(
+                value.password,
+                checkEmail.password);
+            if (!comparePassword) return res.json({ message:`password is not match!` });
+
+            const userForToken = {
+                id: checkEmail.id,
+                email: checkEmail.email,
+                userName: checkEmail.userName,
+                fullName: checkEmail.fullName,
+                profil_picture: checkEmail.profil_picture,
+                profil_description: checkEmail.profil_description
+            }
+
+            const user = this.UserRepository.create ({
+                id: checkEmail.id,
+                email: checkEmail.email,
+                fullName: checkEmail.fullName,
+                userName: checkEmail.userName
+            })
+
+            const token = jwt.sign({user}, "whatever", { expiresIn: "5h" });
+            res.locals.loginSession = userForToken
+
+            return res.status(200).json ({
+                message: "login success",
+                token,
+                user: {
+                    id: checkEmail.id,
+                    email: checkEmail.email,
+                    fullName: checkEmail.fullName,
+                    userName: checkEmail.userName,
+                    followers_count: checkEmail.followers.length,
+                    following_count: checkEmail.following.length
                 }
             })
-            if (!checkEmail) return `message: ${reqBody.email} not found`;
-
-            const comparePassword = await bcrypt.compare(reqBody.password, checkEmail.password);
-            if (!comparePassword) return `message: password not match`;
-
-            const user = {
-                id: checkEmail.id,
-                email: checkEmail.email
-            }
-
-            const token = jwt.sign({user}, "whatever", { expiresIn: "1h" });
-
-            return {
-                message: "login success",
-                data: token
-            }
             
         } catch (error) {
-            return "message: something error while login"
+            return res.status(500).json({message: "something error while login"})
         }
     }
 
@@ -72,6 +99,31 @@ export default new class AuthService {
         }   catch (error) {
                 console.log(error)
                 return "message: something error while register"
+        }
+    }
+
+    async check(req: Request, res: Response) : Promise<Response> {
+        try {
+            const userLogin = res.locals.loginSession
+
+            const user = await this.UserRepository.findOne({
+                where : {
+                    id: userLogin.user.id
+                },
+                relations: ["followers", "following"]
+            })
+
+            return res.status(200).json({ message: "Token is valid", user: {
+                id: user.id,
+                email: user.email,
+                fullName: user.fullName,
+                userName: user.userName,
+                profil_picture: user.profil_picture,
+                followers_count: user.followers.length,
+                following_count: user.following.length
+            }})
+        } catch (error) {
+            return res.status(500).json(error)
         }
     }
 } 

@@ -4,6 +4,8 @@ import { AppDataSource } from "../data-source";
 import { Request, Response } from "express";
 import { createThreadSchema } from "../utils/validator/threadValidator";
 import cloudinary from "../libs/cloudinary";
+import { format } from 'date-fns';
+import { id as idLocale } from 'date-fns/locale'; 
 
 export default new class ThreadsService {
     private readonly ThreadRepository : Repository <Threads> = AppDataSource.getRepository(Threads)
@@ -20,7 +22,12 @@ export default new class ThreadsService {
               "threads.id" : "DESC"
             })
             .getMany();
-    
+
+            response.forEach(thread => {
+              const formattedDate = format(new Date(thread.postedAt), 'dd MMMM, yyyy', { locale: idLocale });
+              thread.postedAt = new Date(formattedDate);
+          });
+
           return {
             message: "success getting all Threads",
             data: response,
@@ -47,7 +54,11 @@ export default new class ThreadsService {
           // const response = await this.ThreadRepository.findOne({
           //   where: { id },
           // });
-    
+
+          const formattedDate = format(new Date(response.postedAt), 'dd MMMM, yyyy', { locale: idLocale });
+          response.postedAt = new Date(formattedDate);
+
+
           return {
             message: "success getting a Thread",
             data: response,

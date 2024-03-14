@@ -1,12 +1,12 @@
-import DetailCard from "../components/DetailCard";
-import Profile from "./Rightbar";
+import Search from "../components/Search";
 import Sidebar from "../components/Leftbar";
+import Profile from "./Rightbar";
 import { Grid, GridItem } from "@chakra-ui/react"
 
-export default function Detail () {
+export default function SearchPage() {
     return (
         <>
-    <Grid templateColumns="repeat(6, 1fr)" bg="gray.50">
+        <Grid templateColumns="repeat(6, 1fr)" bg="gray.50">
     {/* sidebar */}
     <GridItem
       as="aside"
@@ -18,7 +18,7 @@ export default function Detail () {
     >
       <Sidebar />
     </GridItem>
-    {/* detail */}
+    {/* home */}
     <GridItem
       as="main"
       colSpan={{ base: 6, lg: 4, xl: 3 }} 
@@ -26,7 +26,7 @@ export default function Detail () {
       bg="#1d1d1d"
       border="#313131 1px solid"
     >
-        <DetailCard/>
+        <Search />
     </GridItem>
     {/* Profile */}
     <GridItem

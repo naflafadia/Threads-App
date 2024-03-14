@@ -11,23 +11,15 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle, faHeart, faComment } from "@fortawesome/free-solid-svg-icons";
 import {IThreadCard} from '../interface/Threads'
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
 export default function ListThread (props: IThreadCard) {
-    const navigate: any = useNavigate()
-    console.log(typeof navigate)
+    const [isLiked, setIsLiked] = useState<boolean>(props?.is_liked || false);
+    const handleLike = () => {
+        setIsLiked(!isLiked);
+    };
 
-    // const [likes, setLikes] = useState(props.likes);
-    // const [liked, setLiked] = useState(false);
-
-    // const handleLike = () => {
-    //     if (liked) {
-    //         setLikes(likes - 1);
-    //     } else {
-    //         setLikes(likes + 1);
-    //     }
-    //     setLiked(!liked);
-    // }
     return (
     <>
     <Link to={`/thread/${props.id}`}>
@@ -41,7 +33,7 @@ export default function ListThread (props: IThreadCard) {
                     <Text color="white">{props.fullName}</Text>
                     <Text color="white" fontWeight="light" fontSize="sm">@{props.userName}</Text>
                     <FontAwesomeIcon icon={faCircle} color="white" width="5px"/>
-                    <Text color="white" fontWeight="light" fontSize="sm">{props.created_at}</Text>
+                    <Text color="white" fontWeight="light" fontSize="sm">{props.postedAt}</Text>
                 </Flex>
                 <Flex direction="column" gap="10px">
                     <Text color="white" fontSize="xs">{props.content}</Text>
@@ -49,14 +41,15 @@ export default function ListThread (props: IThreadCard) {
                 </Flex>
                 <Flex gap="30px">
                     <Flex alignItems="center" gap="6px">
-                        {/* <button onClick={handleLike}> */}
-                        {/* <FontAwesomeIcon icon={faHeart} color={liked ? "red" : "white"} /> */}
-                        <FontAwesomeIcon icon={faHeart} color="white" />
-                        {/* </button> */}
+                        <button onClick={handleLike}>
+                        <FontAwesomeIcon icon={faHeart} color={isLiked ? "red" : "white"}  />
+                        </button>
                         <Text color="white" fontSize="12px" fontWeight="light">{props.likesCount}</Text>
                     </Flex>
                     <Flex alignItems="center" gap="6px">
+                        <button>
                         <FontAwesomeIcon icon={faComment} color="white" />
+                        </button>
                         <Text color="white" fontSize="12px" fontWeight="light">{props.replyCount}</Text>
                     </Flex>
                 </Flex>
